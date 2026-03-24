@@ -23,7 +23,7 @@ function LoginForm() {
 
   if (authLoading || user) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0d1117' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#04020a' }}>
         <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -42,7 +42,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col" style={{ background: '#0d1117' }}>
+    <div className="min-h-screen relative overflow-hidden flex flex-col" style={{ background: '#04020a' }}>
       {/* Purple gradient glow at bottom */}
       <div
         className="absolute bottom-0 left-0 right-0 h-[65%] pointer-events-none"
@@ -54,7 +54,7 @@ function LoginForm() {
       {/* Login Card - centered */}
       <div className="relative z-10 flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-[360px]">
-          <div className="rounded-2xl border border-white/[0.08] p-7" style={{ background: 'rgba(26, 32, 53, 0.85)', backdropFilter: 'blur(24px)' }}>
+          <div className="rounded-2xl border border-white/[0.08] p-7" style={{ background: 'rgba(13, 9, 20, 0.95)', backdropFilter: 'blur(24px)' }}>
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-lg font-bold text-white mb-1">Login</h1>
