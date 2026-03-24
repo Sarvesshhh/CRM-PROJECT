@@ -30,27 +30,27 @@ public class CustomerController {
     @GetMapping
     @Operation(summary = "List all customers with pagination")
     public ResponseEntity<Page<CustomerResponse>> getAllCustomers(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(customerService.getAllCustomers(page, size));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get customer by ID")
-    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a customer")
-    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable Long id,
+    public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable(name = "id") Long id,
                                                            @Valid @RequestBody CustomerRequest request) {
         return ResponseEntity.ok(customerService.updateCustomer(id, request));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a customer")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCustomer(@PathVariable(name = "id") Long id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.noContent().build();
     }
@@ -58,9 +58,9 @@ public class CustomerController {
     @GetMapping("/search")
     @Operation(summary = "Search customers by name")
     public ResponseEntity<Page<CustomerResponse>> searchCustomers(
-            @RequestParam String name,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(name = "name") String name,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(customerService.searchCustomers(name, page, size));
     }
 }

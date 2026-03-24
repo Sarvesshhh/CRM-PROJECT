@@ -30,7 +30,13 @@ public class ActivityController {
 
     @GetMapping("/customer/{customerId}")
     @Operation(summary = "Get all activities for a customer")
-    public ResponseEntity<List<ActivityResponse>> getActivitiesByCustomer(@PathVariable Long customerId) {
+    public ResponseEntity<List<ActivityResponse>> getActivitiesByCustomer(@PathVariable(name = "customerId") Long customerId) {
         return ResponseEntity.ok(activityService.getActivitiesByCustomer(customerId));
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all activities")
+    public ResponseEntity<List<ActivityResponse>> getAllActivities() {
+        return ResponseEntity.ok(activityService.getAllActivities());
     }
 }

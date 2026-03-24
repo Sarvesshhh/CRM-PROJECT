@@ -7,4 +7,5 @@ import java.util.List;
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
     List<Activity> findByCustomerIdOrderByDateDesc(Long customerId);
     List<Activity> findTop10ByOrderByDateDesc();
+    List<Activity> findAllByOrderByDateDesc();
 }
