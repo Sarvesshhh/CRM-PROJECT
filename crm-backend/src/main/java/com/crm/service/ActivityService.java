@@ -47,6 +47,11 @@ public class ActivityService {
                 .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
+    public List<ActivityResponse> getAllActivities() {
+        return activityRepository.findAllByOrderByDateDesc()
+                .stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
     public ActivityResponse mapToResponse(Activity activity) {
         return ActivityResponse.builder()
                 .id(activity.getId())
