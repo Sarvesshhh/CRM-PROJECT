@@ -1,7 +1,6 @@
 package com.crm.controller;
 
 import com.crm.dto.*;
-import com.crm.entity.User;
 import com.crm.repository.UserRepository;
 import com.crm.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
