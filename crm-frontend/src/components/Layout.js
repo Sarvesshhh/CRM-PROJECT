@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import toast from 'react-hot-toast';
 import {
   HiOutlineViewGrid,
@@ -17,9 +18,12 @@ import {
   HiOutlineCog,
   HiOutlineChevronLeft,
   HiOutlineChevronRight,
+  HiOutlineSun,
+  HiOutlineMoon,
 } from 'react-icons/hi';
 
 export default function Layout({ children }) {
+  const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [panelExpanded, setPanelExpanded] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -52,7 +56,7 @@ export default function Layout({ children }) {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: '#0d1117' }}>
+    <div className="min-h-screen bg-theme-bg-primary text-theme-text-primary">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -180,24 +184,25 @@ export default function Layout({ children }) {
         }}
       >
         {/* Top bar */}
-        <header className="sticky top-0 z-30 flex items-center px-6" style={{
-          height: '56px',
-          background: 'rgba(13,17,23,0.9)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
-        }}>
+        <header className="sticky top-0 z-30 flex items-center px-6 bg-theme-bg-primary/95 backdrop-blur-md border-b border-theme-card-border" style={{ height: '56px' }}>
           <button
-            className="lg:hidden mr-4"
-            style={{ color: '#666', transition: 'color 0.2s' }}
+            className="lg:hidden mr-4 text-theme-text-muted hover:text-theme-text-primary transition-colors"
             onClick={() => setSidebarOpen(true)}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-            onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
           >
             <HiOutlineMenu style={{ width: 22, height: 22 }} />
           </button>
-          <h1 style={{ fontSize: '16px', fontWeight: 600, color: '#fff', textTransform: 'capitalize' }}>
+          <h1 className="text-base font-semibold text-theme-text-primary capitalize">
             {pathname === '/dashboard' || pathname === '/admin/dashboard' ? 'Dashboard' : pathname?.split('/').pop() || ''}
           </h1>
+          <div className="flex-1 flex justify-end gap-3 items-center">
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-theme-text-muted hover:text-theme-accent-primary rounded-lg transition-colors"
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? <HiOutlineSun className="w-5 h-5" /> : <HiOutlineMoon className="w-5 h-5" />}
+            </button>
+          </div>
         </header>
 
         {/* Page content */}

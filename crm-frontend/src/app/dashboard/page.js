@@ -64,10 +64,10 @@ function DashboardContent() {
       <div className="animate-fadeIn space-y-8">
         {/* Welcome */}
         <div>
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-theme-text-primary">
             Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {user?.name || 'there'}! 👋
           </h2>
-          <p className="text-dark-400 mt-1">Here&apos;s what&apos;s happening with your CRM today.</p>
+          <p className="text-theme-text-muted mt-1">Here&apos;s what&apos;s happening with your CRM today.</p>
         </div>
 
         {/* Stats Grid */}
@@ -99,30 +99,30 @@ function DashboardContent() {
         </div>
 
         {/* Recent Activities */}
-        <div className="rounded-2xl overflow-hidden" style={{ background: '#1a2035', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 4px 24px rgba(0,0,0,0.4)', borderRadius: '14px' }}>
-          <div className="px-6 py-4 border-b border-white/5">
-            <h3 className="text-lg font-semibold text-white">Recent Activities</h3>
+        <div className="rounded-2xl overflow-hidden bg-theme-bg-tertiary border border-theme-card-border shadow-card">
+          <div className="px-6 py-4 border-b border-theme-card-border">
+            <h3 className="text-lg font-semibold text-theme-text-primary">Recent Activities</h3>
           </div>
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-theme-table-divider">
             {stats?.recentActivities?.length > 0 ? (
               stats.recentActivities.map((activity, idx) => (
                 <div key={idx} className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.15)' }}>
-                    <span className="text-primary-400">{activityIcon(activity.type)}</span>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(155, 62, 255, 0.2)', border: '1px solid rgba(155, 62, 255, 0.25)' }}>
+                    <span className="text-[#9B3EFF]">{activityIcon(activity.type)}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-theme-text-primary">
                       {activity.type} - {activity.customerName || 'Unknown'}
                     </p>
-                    <p className="text-xs text-dark-400 truncate">{activity.notes || 'No notes'}</p>
+                    <p className="text-xs text-theme-text-muted truncate">{activity.notes || 'No notes'}</p>
                   </div>
-                  <span className="text-xs text-dark-500 whitespace-nowrap">
+                  <span className="text-xs text-theme-text-muted whitespace-nowrap">
                     {activity.date ? new Date(activity.date).toLocaleDateString() : ''}
                   </span>
                 </div>
               ))
             ) : (
-              <div className="px-6 py-12 text-center text-dark-400">
+              <div className="px-6 py-12 text-center text-theme-text-muted">
                 <p className="text-sm">No recent activities yet</p>
               </div>
             )}
