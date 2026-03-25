@@ -1,5 +1,6 @@
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 export const metadata = {
   title: 'CRM Suite - Customer Relationship Management',
@@ -8,9 +9,23 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            try {
+              if (localStorage.theme === 'dark' || (!('theme' in localStorage))) {
+                document.documentElement.classList.add('dark');
+              } else {
+                document.documentElement.classList.remove('dark');
+              }
+            } catch (_) {}
+          `
+        }} />
+      </head>
       <body>
-        <Toaster
+        <ThemeProvider>
+          <Toaster
           position="top-right"
           toastOptions={{
             duration: 3000,
@@ -30,6 +45,7 @@ export default function RootLayout({ children }) {
           }}
         />
         {children}
+        </ThemeProvider>
       </body>
     </html>
   );

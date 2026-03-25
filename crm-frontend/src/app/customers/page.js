@@ -105,7 +105,7 @@ function CustomersContent() {
       INACTIVE: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
       CHURNED: 'bg-rose-500/15 text-rose-400 border-rose-500/20',
     };
-    return map[status] || 'bg-dark-700 text-dark-300 border-dark-600';
+    return map[status] || 'bg-dark-700 text-theme-text-secondary border-dark-600';
   };
 
   if (authLoading || loading) {
@@ -117,64 +117,64 @@ function CustomersContent() {
       <div className="animate-fadeIn space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-white">Customers</h2>
-            <p className="text-dark-400 text-sm mt-1">Manage your customer base</p>
+            <h2 className="text-2xl font-bold text-theme-text-primary">Customers</h2>
+            <p className="text-theme-text-muted text-sm mt-1">Manage your customer base</p>
           </div>
           <div className="flex items-center gap-3">
             <form onSubmit={handleSearch} className="relative">
-              <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-500" />
+              <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-text-muted" />
               <input
                 id="customer-search"
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name..."
-                className="pl-9 pr-4 py-2 border border-white/10 rounded-xl text-sm text-white placeholder:text-dark-500 focus:border-primary-500 transition-all w-48" style={{ background: '#1a2035' }}
+                className="pl-9 pr-4 py-2 bg-theme-bg-tertiary border border-theme-card-border rounded-xl text-sm text-theme-text-primary placeholder:text-theme-text-muted focus:border-theme-accent-primary transition-all w-48"
               />
             </form>
             <button id="create-customer-btn" onClick={openCreate}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl text-sm font-medium shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 transition-all">
+              className="flex items-center gap-2 px-4 py-2 bg-theme-accent-primary hover:bg-theme-accent-hover text-white rounded-xl text-sm font-medium transition-all">
               <HiOutlinePlus className="w-4 h-4" /> Add Customer
             </button>
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden" style={{ background: '#1a2035', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 4px 24px rgba(0,0,0,0.4)', borderRadius: '14px' }}>
+        <div className="rounded-2xl overflow-hidden bg-theme-bg-tertiary border border-theme-card-border shadow-card">
           <div className="table-container">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-white/5">
-                  <th className="text-left px-6 py-4 text-xs font-medium text-dark-400 uppercase tracking-wider">Name</th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-dark-400 uppercase tracking-wider">Email</th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-dark-400 uppercase tracking-wider hidden md:table-cell">Phone</th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-dark-400 uppercase tracking-wider hidden lg:table-cell">Company</th>
-                  <th className="text-left px-6 py-4 text-xs font-medium text-dark-400 uppercase tracking-wider">Status</th>
-                  <th className="text-right px-6 py-4 text-xs font-medium text-dark-400 uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-theme-card-border">
+                  <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider">Name</th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider">Email</th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider hidden md:table-cell">Phone</th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider hidden lg:table-cell">Company</th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider">Status</th>
+                  <th className="text-right px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-theme-table-divider">
                 {customers.length > 0 ? customers.map((c) => (
                   <tr key={c.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-white">{c.name}</td>
-                    <td className="px-6 py-4 text-sm text-dark-300">{c.email || '-'}</td>
-                    <td className="px-6 py-4 text-sm text-dark-300 hidden md:table-cell">{c.phone || '-'}</td>
-                    <td className="px-6 py-4 text-sm text-dark-300 hidden lg:table-cell">{c.company || '-'}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-theme-text-primary">{c.name}</td>
+                    <td className="px-6 py-4 text-sm text-theme-text-secondary">{c.email || '-'}</td>
+                    <td className="px-6 py-4 text-sm text-theme-text-secondary hidden md:table-cell">{c.phone || '-'}</td>
+                    <td className="px-6 py-4 text-sm text-theme-text-secondary hidden lg:table-cell">{c.company || '-'}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex px-2.5 py-1 rounded-lg text-xs font-medium border ${statusColor(c.status)}`}>{c.status}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openEdit(c)} className="p-2 text-dark-400 hover:text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all" title="Edit">
+                        <button onClick={() => openEdit(c)} className="p-2 text-theme-text-muted hover:text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all" title="Edit">
                           <HiOutlinePencil className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(c.id)} className="p-2 text-dark-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all" title="Delete">
+                        <button onClick={() => handleDelete(c.id)} className="p-2 text-theme-text-muted hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all" title="Delete">
                           <HiOutlineTrash className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
                   </tr>
                 )) : (
-                  <tr><td colSpan="6" className="px-6 py-12 text-center text-dark-400 text-sm">No customers found</td></tr>
+                  <tr><td colSpan="6" className="px-6 py-12 text-center text-theme-text-muted text-sm">No customers found</td></tr>
                 )}
               </tbody>
             </table>
@@ -182,15 +182,15 @@ function CustomersContent() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-white/5">
-              <p className="text-sm text-dark-400">Page {page + 1} of {totalPages}</p>
+            <div className="flex items-center justify-between px-6 py-4 border-t border-theme-card-border">
+              <p className="text-sm text-theme-text-muted">Page {page + 1} of {totalPages}</p>
               <div className="flex gap-2">
                 <button disabled={page === 0} onClick={() => setPage(p => p - 1)}
-                  className="p-2 text-dark-400 hover:text-white border border-white/10 rounded-lg hover:bg-white/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                  className="p-2 text-theme-text-muted hover:text-theme-text-primary border border-theme-card-border rounded-lg hover:bg-theme-bg-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                   <HiOutlineChevronLeft className="w-4 h-4" />
                 </button>
                 <button disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}
-                  className="p-2 text-dark-400 hover:text-white border border-white/10 rounded-lg hover:bg-white/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                  className="p-2 text-theme-text-muted hover:text-theme-text-primary border border-theme-card-border rounded-lg hover:bg-theme-bg-secondary transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                   <HiOutlineChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -201,41 +201,41 @@ function CustomersContent() {
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingCustomer ? 'Edit Customer' : 'New Customer'}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-theme-text-secondary mb-1">Name *</label>
               <input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required
-                className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all" />
+                className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1">Email</label>
+                <label className="block text-sm font-medium text-theme-text-secondary mb-1">Email</label>
                 <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all" />
+                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-theme-text-secondary mb-1">Phone</label>
                 <input value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all" />
+                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1">Company</label>
+                <label className="block text-sm font-medium text-theme-text-secondary mb-1">Company</label>
                 <input value={form.company} onChange={(e) => setForm({...form, company: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all" />
+                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1">Status</label>
+                <label className="block text-sm font-medium text-theme-text-secondary mb-1">Status</label>
                 <select value={form.status} onChange={(e) => setForm({...form, status: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all">
+                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
                   {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={() => setModalOpen(false)}
-                className="px-4 py-2 text-sm text-dark-400 hover:text-white border border-white/10 rounded-xl hover:bg-white/5 transition-all">Cancel</button>
+                className="px-4 py-2 text-sm text-theme-text-muted hover:text-theme-text-primary border border-theme-card-border rounded-xl hover:bg-theme-bg-secondary transition-all">Cancel</button>
               <button type="submit"
-                className="px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl text-sm font-medium shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 transition-all">
+                className="px-6 py-2 bg-theme-accent-primary hover:bg-theme-accent-hover text-white rounded-xl text-sm font-medium transition-all">
                 {editingCustomer ? 'Update' : 'Create'}
               </button>
             </div>

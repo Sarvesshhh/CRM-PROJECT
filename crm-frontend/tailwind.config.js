@@ -13,8 +13,8 @@ module.exports = {
           100: '#f3e8ff',
           200: '#e9d5ff',
           300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
+          400: '#B066FF',
+          500: '#9B3EFF',
           600: '#9333ea',
           700: '#7c3aed',
           800: '#6b21a8',
@@ -29,15 +29,50 @@ module.exports = {
           400: '#4b5563',
           500: '#374151',
           600: '#1f2937',
-          700: '#161b27',
+          700: '#161420',
           800: '#111827',
-          900: '#0d1117',
+          900: '#04020a',
           950: '#0a0e14',
         },
         surface: {
-          DEFAULT: '#1a2035',
+          DEFAULT: '#12101C',
           light: '#1f2641',
           border: '#252d42',
+        },
+        theme: {
+          bg: {
+            primary: 'var(--theme-bg-primary)',
+            secondary: 'var(--theme-bg-secondary)',
+            tertiary: 'var(--theme-bg-tertiary)',
+            input: 'var(--theme-input-bg)',
+          },
+          text: {
+            primary: 'var(--theme-text-primary)',
+            secondary: 'var(--theme-text-secondary)',
+            muted: 'var(--theme-text-muted)',
+          },
+          accent: {
+            primary: 'var(--theme-accent-primary)',
+            hover: 'var(--theme-accent-hover)',
+            light: 'var(--theme-accent-light)',
+          },
+          sidebar: {
+            bg: 'var(--theme-sidebar-bg)',
+            border: 'var(--theme-sidebar-border)',
+            'active-bg': 'var(--theme-sidebar-active-bg)',
+            'active-text': 'var(--theme-sidebar-active-text)',
+            rail: 'var(--theme-sidebar-rail-bg)',
+          },
+          card: {
+            border: 'var(--theme-card-border)',
+          },
+          table: {
+            divider: 'var(--theme-table-divider)',
+            header: 'var(--theme-table-header-bg)',
+          },
+          modal: {
+            overlay: 'var(--theme-modal-overlay)',
+          }
         }
       },
       fontFamily: {
@@ -47,8 +82,8 @@ module.exports = {
         '2xl': '14px',
       },
       boxShadow: {
-        'card': '0 4px 24px rgba(0,0,0,0.4)',
-        'card-hover': '0 8px 32px rgba(0,0,0,0.5)',
+        'card': 'var(--theme-card-shadow)',
+        'card-hover': 'var(--theme-card-hover-shadow)',
         'glow-purple': '0 0 20px rgba(168, 85, 247, 0.15)',
         'glow-emerald': '0 0 20px rgba(16, 185, 129, 0.15)',
         'glow-amber': '0 0 20px rgba(245, 158, 11, 0.15)',

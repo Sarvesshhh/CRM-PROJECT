@@ -97,7 +97,7 @@ function TasksContent() {
       COMPLETED: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
       CANCELLED: 'bg-rose-500/15 text-rose-400 border-rose-500/20',
     };
-    return map[status] || 'bg-dark-700 text-dark-300 border-dark-600';
+    return map[status] || 'bg-dark-700 text-theme-text-secondary border-dark-600';
   };
 
   const isOverdue = (dueDate) => {
@@ -114,11 +114,11 @@ function TasksContent() {
       <div className="animate-fadeIn space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-white">Tasks</h2>
-            <p className="text-dark-400 text-sm mt-1">{tasks.length} total tasks</p>
+            <h2 className="text-2xl font-bold text-theme-text-primary">Tasks</h2>
+            <p className="text-theme-text-muted text-sm mt-1">{tasks.length} total tasks</p>
           </div>
           <button id="create-task-btn" onClick={openCreate}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl text-sm font-medium shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 transition-all self-start sm:self-auto">
+            className="flex items-center gap-2 px-4 py-2 bg-theme-accent-primary hover:bg-theme-accent-hover text-white rounded-xl text-sm font-medium transition-all self-start sm:self-auto">
             <HiOutlinePlus className="w-4 h-4" /> Add Task
           </button>
         </div>
@@ -126,18 +126,18 @@ function TasksContent() {
         {/* Task Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {tasks.length > 0 ? tasks.map((task) => (
-            <div key={task.id} className="rounded-2xl p-5 transition-all group" style={{ background: '#1a2035', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 4px 24px rgba(0,0,0,0.4)', borderRadius: '14px' }}>
+            <div key={task.id} className="rounded-2xl p-5 transition-all group bg-theme-bg-tertiary border border-theme-card-border shadow-card hover:shadow-card-hover">
               <div className="flex items-start justify-between mb-3">
-                <h3 className="text-sm font-semibold text-white group-hover:text-primary-300 transition-colors line-clamp-1">{task.title}</h3>
+                <h3 className="text-sm font-semibold text-theme-text-primary group-hover:text-primary-300 transition-colors line-clamp-1">{task.title}</h3>
                 <span className={`inline-flex px-2 py-0.5 rounded-lg text-[11px] font-medium border ${statusColor(task.status)}`}>
                   {task.status?.replace('_', ' ')}
                 </span>
               </div>
               {task.description && (
-                <p className="text-xs text-dark-400 mb-4 line-clamp-2">{task.description}</p>
+                <p className="text-xs text-theme-text-muted mb-4 line-clamp-2">{task.description}</p>
               )}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-xs text-dark-500">
+                <div className="flex items-center gap-4 text-xs text-theme-text-muted">
                   {task.dueDate && (
                     <span className={`flex items-center gap-1 ${isOverdue(task.dueDate) ? 'text-rose-400' : ''}`}>
                       <HiOutlineCalendar className="w-3.5 h-3.5" />
@@ -149,17 +149,17 @@ function TasksContent() {
                   )}
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => openEdit(task)} className="p-1.5 text-dark-400 hover:text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all">
+                  <button onClick={() => openEdit(task)} className="p-1.5 text-theme-text-muted hover:text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all">
                     <HiOutlinePencil className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => handleDelete(task.id)} className="p-1.5 text-dark-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all">
+                  <button onClick={() => handleDelete(task.id)} className="p-1.5 text-theme-text-muted hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all">
                     <HiOutlineTrash className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
             </div>
           )) : (
-            <div className="col-span-full rounded-2xl p-12 text-center text-dark-400 text-sm" style={{ background: '#1a2035', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 4px 24px rgba(0,0,0,0.4)', borderRadius: '14px' }}>
+            <div className="col-span-full rounded-2xl p-12 text-center text-theme-text-muted text-sm bg-theme-bg-tertiary border border-theme-card-border shadow-card">
               No tasks yet. Click &quot;Add Task&quot; to get started.
             </div>
           )}
@@ -168,34 +168,34 @@ function TasksContent() {
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingTask ? 'Edit Task' : 'New Task'}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1">Title *</label>
+              <label className="block text-sm font-medium text-theme-text-secondary mb-1">Title *</label>
               <input value={form.title} onChange={(e) => setForm({...form, title: e.target.value})} required
-                className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all" />
+                className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-dark-300 mb-1">Description</label>
+              <label className="block text-sm font-medium text-theme-text-secondary mb-1">Description</label>
               <textarea rows={3} value={form.description} onChange={(e) => setForm({...form, description: e.target.value})}
-                className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all resize-none" />
+                className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all resize-none" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1">Due Date</label>
+                <label className="block text-sm font-medium text-theme-text-secondary mb-1">Due Date</label>
                 <input type="date" value={form.dueDate} onChange={(e) => setForm({...form, dueDate: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all" />
+                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1">Status</label>
+                <label className="block text-sm font-medium text-theme-text-secondary mb-1">Status</label>
                 <select value={form.status} onChange={(e) => setForm({...form, status: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-dark-800/50 border border-white/10 rounded-xl text-white text-sm focus:border-primary-500 transition-all">
+                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
                   {STATUSES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
                 </select>
               </div>
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={() => setModalOpen(false)}
-                className="px-4 py-2 text-sm text-dark-400 hover:text-white border border-white/10 rounded-xl hover:bg-white/5 transition-all">Cancel</button>
+                className="px-4 py-2 text-sm text-theme-text-muted hover:text-theme-text-primary border border-theme-card-border rounded-xl hover:bg-theme-bg-secondary transition-all">Cancel</button>
               <button type="submit"
-                className="px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl text-sm font-medium shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 transition-all">
+                className="px-6 py-2 bg-theme-accent-primary hover:bg-theme-accent-hover text-white rounded-xl text-sm font-medium transition-all">
                 {editingTask ? 'Update' : 'Create'}
               </button>
             </div>
