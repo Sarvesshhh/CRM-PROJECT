@@ -6,6 +6,7 @@
 
 @layer base {
   :root {
+    color-scheme: light;
     --theme-bg-primary: #F4F1FC;
     --theme-bg-secondary: #FAF8FF;
     --theme-bg-tertiary: #FFFFFF;
@@ -43,6 +44,7 @@
   }
 
   .dark {
+    color-scheme: dark;
     --theme-bg-primary: #04020a;
     --theme-bg-secondary: #0A0812;
     --theme-bg-tertiary: #12101C;
@@ -144,6 +146,11 @@ body {
 /* Form styles */
 input, select, textarea {
   outline: none;
+}
+
+option {
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
 }
 
 input:focus, select:focus, textarea:focus {

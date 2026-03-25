@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/dashboard")
@@ -22,7 +24,7 @@ public class DashboardController {
 
     @GetMapping("/stats")
     @Operation(summary = "Get dashboard statistics")
-    public ResponseEntity<DashboardResponse> getDashboardStats() {
-        return ResponseEntity.ok(dashboardService.getDashboardStats());
+    public ResponseEntity<DashboardResponse> getDashboardStats(Principal principal) {
+        return ResponseEntity.ok(dashboardService.getDashboardStats(principal.getName()));
     }
 }

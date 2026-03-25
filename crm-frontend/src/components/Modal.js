@@ -1,12 +1,20 @@
 'use client';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function Modal({ isOpen, onClose, title, children }) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center">
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
       <div
-        className="absolute inset-0 bg-theme-modal-overlay backdrop-blur-sm"
+        className="absolute inset-0 bg-theme-modal-overlay backdrop-blur-md"
         onClick={onClose}
       />
       <div className="relative border border-theme-card-border rounded-2xl shadow-card w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto animate-modal bg-theme-bg-tertiary">
@@ -21,6 +29,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
         </div>
         <div className="p-6 text-theme-text-primary">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

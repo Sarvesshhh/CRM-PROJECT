@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/customers")
 @RequiredArgsConstructor
@@ -23,16 +25,17 @@ public class CustomerController {
 
     @PostMapping
     @Operation(summary = "Create a new customer")
-    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request) {
-        return ResponseEntity.ok(customerService.createCustomer(request));
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request, Principal principal) {
+        return ResponseEntity.ok(customerService.createCustomer(request, principal.getName()));
     }
 
     @GetMapping
     @Operation(summary = "List all customers with pagination")
     public ResponseEntity<Page<CustomerResponse>> getAllCustomers(
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(customerService.getAllCustomers(page, size));
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            Principal principal) {
+        return ResponseEntity.ok(customerService.getAllCustomers(page, size, principal.getName()));
     }
 
     @GetMapping("/{id}")
@@ -44,8 +47,8 @@ public class CustomerController {
     @PutMapping("/{id}")
     @Operation(summary = "Update a customer")
     public ResponseEntity<CustomerResponse> updateCustomer(@PathVariable(name = "id") Long id,
-                                                           @Valid @RequestBody CustomerRequest request) {
-        return ResponseEntity.ok(customerService.updateCustomer(id, request));
+                                                           @Valid @RequestBody CustomerRequest request, Principal principal) {
+        return ResponseEntity.ok(customerService.updateCustomer(id, request, principal.getName()));
     }
 
     @DeleteMapping("/{id}")
@@ -60,7 +63,8 @@ public class CustomerController {
     public ResponseEntity<Page<CustomerResponse>> searchCustomers(
             @RequestParam(name = "name") String name,
             @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(customerService.searchCustomers(name, page, size));
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            Principal principal) {
+        return ResponseEntity.ok(customerService.searchCustomers(name, page, size, principal.getName()));
     }
 }

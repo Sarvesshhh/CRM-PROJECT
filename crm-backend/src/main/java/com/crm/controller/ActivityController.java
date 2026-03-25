@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.crm.repository.UserRepository;
+import com.crm.entity.User;
+import com.crm.exception.ResourceNotFoundException;
 import java.util.List;
 
 @RestController
@@ -21,11 +24,12 @@ import java.util.List;
 public class ActivityController {
 
     private final ActivityService activityService;
+    private final UserRepository userRepository;
 
     @PostMapping
     @Operation(summary = "Log a new activity (CALL, MEETING, EMAIL)")
-    public ResponseEntity<ActivityResponse> createActivity(@Valid @RequestBody ActivityRequest request) {
-        return ResponseEntity.ok(activityService.createActivity(request));
+    public ResponseEntity<ActivityResponse> createActivity(@Valid @RequestBody ActivityRequest request, java.security.Principal principal) {
+        return ResponseEntity.ok(activityService.createActivity(request, principal.getName()));
     }
 
     @GetMapping("/customer/{customerId}")
@@ -36,7 +40,9 @@ public class ActivityController {
 
     @GetMapping
     @Operation(summary = "Get all activities")
-    public ResponseEntity<List<ActivityResponse>> getAllActivities() {
-        return ResponseEntity.ok(activityService.getAllActivities());
+    public ResponseEntity<List<ActivityResponse>> getAllActivities(java.security.Principal principal) {
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return ResponseEntity.ok(activityService.getAllActivitiesForUser(user));
     }
 }

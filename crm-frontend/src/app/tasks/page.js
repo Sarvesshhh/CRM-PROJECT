@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import Layout from '@/components/Layout';
 import Modal from '@/components/Modal';
-import { taskAPI } from '@/lib/api';
+import { taskAPI, userAPI } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
@@ -11,6 +11,7 @@ import {
   HiOutlinePencil,
   HiOutlineTrash,
   HiOutlineCalendar,
+  HiOutlineUser,
 } from 'react-icons/hi';
 
 const STATUSES = ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
@@ -22,13 +23,17 @@ function TasksContent() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
     title: '', description: '', dueDate: '', status: 'PENDING', assignedToId: null, customerId: null,
   });
 
   useEffect(() => {
     if (!authLoading && !user) { router.push('/login'); return; }
-    if (user) fetchTasks();
+    if (user) {
+      fetchTasks();
+      fetchUsers();
+    }
   }, [user, authLoading]);
 
   const fetchTasks = async () => {
@@ -42,9 +47,22 @@ function TasksContent() {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const res = await userAPI.getAll();
+      setUsers(res.data);
+    } catch (err) {
+      console.error('Failed to load users', err);
+    }
+  };
+
   const openCreate = () => {
     setEditingTask(null);
-    setForm({ title: '', description: '', dueDate: '', status: 'PENDING', assignedToId: null, customerId: null });
+    setForm({
+      title: '', description: '', dueDate: '', status: 'PENDING',
+      assignedToId: user?.role === 'ADMIN' ? '' : (user?.id || ''),
+      customerId: null,
+    });
     setModalOpen(true);
   };
 
@@ -53,16 +71,16 @@ function TasksContent() {
     setForm({
       title: t.title || '', description: t.description || '',
       dueDate: t.dueDate || '', status: t.status || 'PENDING',
-      assignedToId: t.assignedToId || null, customerId: t.customerId || null,
+      assignedToId: t.assignedToId || (user?.id || ''),
+      customerId: t.customerId || null,
     });
     setModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { ...form };
+    const payload = { ...form, assignedToId: Number(form.assignedToId) };
     if (!payload.dueDate) delete payload.dueDate;
-    if (!payload.assignedToId) delete payload.assignedToId;
     if (!payload.customerId) delete payload.customerId;
     try {
       if (editingTask) {
@@ -105,6 +123,8 @@ function TasksContent() {
     return new Date(dueDate) < new Date() && !['COMPLETED', 'CANCELLED'].includes(form.status);
   };
 
+  const isAdmin = user?.role === 'ADMIN';
+
   if (authLoading || loading) {
     return <Layout><div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" /></div></Layout>;
   }
@@ -144,6 +164,12 @@ function TasksContent() {
                       {new Date(task.dueDate).toLocaleDateString()}
                     </span>
                   )}
+                  {task.assignedToName && (
+                    <span className="flex items-center gap-1 truncate max-w-[120px]">
+                      <HiOutlineUser className="w-3.5 h-3.5" />
+                      {task.assignedToName}
+                    </span>
+                  )}
                   {task.customerName && (
                     <span className="truncate max-w-[120px]">{task.customerName}</span>
                   )}
@@ -170,26 +196,39 @@ function TasksContent() {
             <div>
               <label className="block text-sm font-medium text-theme-text-secondary mb-1">Title *</label>
               <input value={form.title} onChange={(e) => setForm({...form, title: e.target.value})} required
-                className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
+                className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
             </div>
             <div>
               <label className="block text-sm font-medium text-theme-text-secondary mb-1">Description</label>
               <textarea rows={3} value={form.description} onChange={(e) => setForm({...form, description: e.target.value})}
-                className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all resize-none" />
+                className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all resize-none" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-theme-text-secondary mb-1">Due Date</label>
                 <input type="date" value={form.dueDate} onChange={(e) => setForm({...form, dueDate: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-theme-text-secondary mb-1">Status</label>
                 <select value={form.status} onChange={(e) => setForm({...form, status: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
                   {STATUSES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
                 </select>
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-theme-text-secondary mb-1">Assign To *</label>
+              {isAdmin ? (
+                <select value={form.assignedToId} onChange={(e) => setForm({...form, assignedToId: e.target.value})} required
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
+                  <option value="">Select user</option>
+                  {users.map(u => <option key={u.id} value={u.id}>{u.name} ({u.role})</option>)}
+                </select>
+              ) : (
+                <input value={user?.name || ''} disabled
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-muted text-sm cursor-not-allowed" />
+              )}
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={() => setModalOpen(false)}

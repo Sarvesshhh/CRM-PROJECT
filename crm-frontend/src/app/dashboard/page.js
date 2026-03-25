@@ -44,7 +44,12 @@ function DashboardContent() {
     switch (type?.toUpperCase()) {
       case 'CALL': return <HiOutlinePhone className="w-4 h-4" />;
       case 'EMAIL': return <HiOutlineMail className="w-4 h-4" />;
-      case 'MEETING': return <HiOutlineCalendar className="w-4 h-4" />;
+      case 'LEAD_CREATED': return <HiOutlineLightningBolt className="w-4 h-4" />;
+      case 'CUSTOMER_CREATED':
+      case 'CUSTOMER_UPDATED': return <HiOutlineUserGroup className="w-4 h-4" />;
+      case 'TASK_CREATED': return <HiOutlineClipboardList className="w-4 h-4" />;
+      case 'TASK_COMPLETED': return <HiOutlineCheckCircle className="w-4 h-4" />;
+      case 'MEETING':
       default: return <HiOutlineCalendar className="w-4 h-4" />;
     }
   };
@@ -112,9 +117,11 @@ function DashboardContent() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-theme-text-primary">
-                      {activity.type} - {activity.customerName || 'Unknown'}
+                      {activity.notes || activity.type.replace('_', ' ')}
                     </p>
-                    <p className="text-xs text-theme-text-muted truncate">{activity.notes || 'No notes'}</p>
+                    <p className="text-xs text-theme-text-muted truncate mt-0.5">
+                      {activity.performedByName ? `By ${activity.performedByName.split(' ')[0]}` : 'System'} • {activity.type.replace('_', ' ')}
+                    </p>
                   </div>
                   <span className="text-xs text-theme-text-muted whitespace-nowrap">
                     {activity.date ? new Date(activity.date).toLocaleDateString() : ''}

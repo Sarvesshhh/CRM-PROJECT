@@ -5,7 +5,9 @@ import com.crm.dto.LeadRequest;
 import com.crm.dto.LeadResponse;
 import com.crm.entity.Customer;
 import com.crm.entity.Lead;
+import com.crm.entity.Role;
 import com.crm.entity.User;
+import com.crm.entity.ActivityType;
 import com.crm.exception.ResourceNotFoundException;
 import com.crm.repository.CustomerRepository;
 import com.crm.repository.LeadRepository;
@@ -23,8 +25,16 @@ public class LeadService {
     private final LeadRepository leadRepository;
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
+    private final ActivityService activityService;
 
-    public LeadResponse createLead(LeadRequest request) {
+    private User getCurrentUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    public LeadResponse createLead(LeadRequest request, String currentUserEmail) {
+        User currentUser = getCurrentUser(currentUserEmail);
+
         Lead lead = Lead.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -33,16 +43,22 @@ public class LeadService {
                 .status(request.getStatus() != null ? request.getStatus() : "NEW")
                 .build();
 
-        if (request.getAssignedToId() != null) {
-            User user = userRepository.findById(request.getAssignedToId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-            lead.setAssignedTo(user);
+        // SALES users are always assigned to themselves
+        if (currentUser.getRole() == Role.ADMIN) {
+            User assignee = userRepository.findById(request.getAssignedToId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Assigned user not found"));
+            lead.setAssignedTo(assignee);
+        } else {
+            lead.setAssignedTo(currentUser);
         }
 
-        return mapToResponse(leadRepository.save(lead));
+        Lead savedLead = leadRepository.save(lead);
+        activityService.logSystemActivity(ActivityType.LEAD_CREATED, "Created Lead: " + savedLead.getName(), savedLead.getId(), "LEAD", null, currentUserEmail);
+        return mapToResponse(savedLead);
     }
 
-    public LeadResponse updateLead(Long id, LeadRequest request) {
+    public LeadResponse updateLead(Long id, LeadRequest request, String currentUserEmail) {
+        User currentUser = getCurrentUser(currentUserEmail);
         Lead lead = leadRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Lead not found with id: " + id));
 
@@ -54,10 +70,12 @@ public class LeadService {
             lead.setStatus(request.getStatus());
         }
 
-        if (request.getAssignedToId() != null) {
-            User user = userRepository.findById(request.getAssignedToId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-            lead.setAssignedTo(user);
+        if (currentUser.getRole() == Role.ADMIN) {
+            User assignee = userRepository.findById(request.getAssignedToId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Assigned user not found"));
+            lead.setAssignedTo(assignee);
+        } else {
+            lead.setAssignedTo(currentUser);
         }
 
         return mapToResponse(leadRepository.save(lead));
@@ -70,12 +88,22 @@ public class LeadService {
         leadRepository.deleteById(id);
     }
 
-    public List<LeadResponse> getAllLeads(String status) {
+    public List<LeadResponse> getAllLeads(String status, String currentUserEmail) {
+        User currentUser = getCurrentUser(currentUserEmail);
         List<Lead> leads;
-        if (status != null && !status.isEmpty()) {
-            leads = leadRepository.findByStatus(status);
+
+        if (currentUser.getRole() == Role.ADMIN) {
+            if (status != null && !status.isEmpty()) {
+                leads = leadRepository.findByStatus(status);
+            } else {
+                leads = leadRepository.findAll();
+            }
         } else {
-            leads = leadRepository.findAll();
+            if (status != null && !status.isEmpty()) {
+                leads = leadRepository.findByStatusAndAssignedToId(status, currentUser.getId());
+            } else {
+                leads = leadRepository.findByAssignedToId(currentUser.getId());
+            }
         }
         return leads.stream().map(this::mapToResponse).collect(Collectors.toList());
     }

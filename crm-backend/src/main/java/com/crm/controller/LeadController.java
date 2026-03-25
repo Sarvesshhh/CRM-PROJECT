@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -25,15 +26,15 @@ public class LeadController {
 
     @PostMapping
     @Operation(summary = "Create a new lead")
-    public ResponseEntity<LeadResponse> createLead(@Valid @RequestBody LeadRequest request) {
-        return ResponseEntity.ok(leadService.createLead(request));
+    public ResponseEntity<LeadResponse> createLead(@Valid @RequestBody LeadRequest request, Principal principal) {
+        return ResponseEntity.ok(leadService.createLead(request, principal.getName()));
     }
 
     @GetMapping
     @Operation(summary = "List all leads, optionally filter by status")
     public ResponseEntity<List<LeadResponse>> getAllLeads(
-            @RequestParam(name = "status", required = false) String status) {
-        return ResponseEntity.ok(leadService.getAllLeads(status));
+            @RequestParam(name = "status", required = false) String status, Principal principal) {
+        return ResponseEntity.ok(leadService.getAllLeads(status, principal.getName()));
     }
 
     @GetMapping("/{id}")
@@ -45,8 +46,8 @@ public class LeadController {
     @PutMapping("/{id}")
     @Operation(summary = "Update a lead")
     public ResponseEntity<LeadResponse> updateLead(@PathVariable(name = "id") Long id,
-                                                   @Valid @RequestBody LeadRequest request) {
-        return ResponseEntity.ok(leadService.updateLead(id, request));
+                                                   @Valid @RequestBody LeadRequest request, Principal principal) {
+        return ResponseEntity.ok(leadService.updateLead(id, request, principal.getName()));
     }
 
     @DeleteMapping("/{id}")

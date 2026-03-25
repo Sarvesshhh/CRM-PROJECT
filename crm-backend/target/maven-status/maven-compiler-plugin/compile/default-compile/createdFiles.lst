@@ -15,6 +15,7 @@ com\crm\dto\LoginRequest$LoginRequestBuilder.class
 com\crm\entity\Role.class
 com\crm\service\LeadService.class
 com\crm\dto\CustomerResponse$CustomerResponseBuilder.class
+com\crm\dto\UserResponse$UserResponseBuilder.class
 com\crm\service\DashboardService.class
 com\crm\exception\BadRequestException.class
 com\crm\dto\ActivityRequest$ActivityRequestBuilder.class
@@ -51,6 +52,7 @@ com\crm\controller\TaskController.class
 com\crm\security\JwtAuthenticationFilter.class
 com\crm\dto\LeadResponse.class
 com\crm\controller\AuthController.class
+com\crm\dto\UserResponse.class
 com\crm\entity\Activity.class
 com\crm\repository\ActivityRepository.class
 com\crm\service\ActivityService.class
