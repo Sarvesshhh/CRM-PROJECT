@@ -43,6 +43,11 @@ export const authAPI = {
   register: (data) => api.post('/auth/register', data),
 };
 
+// User APIs
+export const userAPI = {
+  getAll: () => api.get('/auth/users'),
+};
+
 // Lead APIs
 export const leadAPI = {
   getAll: (status) => api.get('/leads', { params: status ? { status } : {} }),

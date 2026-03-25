@@ -23,8 +23,19 @@ public class Activity {
     private LocalDateTime date;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performed_by_id", nullable = false)
+    private User performedBy;
+
+    // Optional fields for tracking other entities
+    @Column(name = "entity_id")
+    private Long entityId;
+
+    @Column(name = "entity_type")
+    private String entityType;
 
     @PrePersist
     protected void onCreate() {

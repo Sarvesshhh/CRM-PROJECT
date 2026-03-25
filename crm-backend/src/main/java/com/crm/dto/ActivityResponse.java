@@ -11,4 +11,10 @@ public class ActivityResponse {
     private LocalDateTime date;
     private String customerName;
     private Long customerId;
+    
+    private String performedByName;
+    private Long performedById;
+    
+    private Long entityId;
+    private String entityType;
 }

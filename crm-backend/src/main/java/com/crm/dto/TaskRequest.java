@@ -1,6 +1,7 @@
 package com.crm.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.time.LocalDate;
 
@@ -13,6 +14,8 @@ public class TaskRequest {
     private String description;
     private LocalDate dueDate;
     private String status;
+
+    @NotNull(message = "Assigned user is required")
     private Long assignedToId;
     private Long customerId;
 }

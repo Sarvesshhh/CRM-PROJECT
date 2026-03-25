@@ -3,8 +3,10 @@ package com.crm.service;
 import com.crm.dto.TaskRequest;
 import com.crm.dto.TaskResponse;
 import com.crm.entity.Customer;
+import com.crm.entity.Role;
 import com.crm.entity.Task;
 import com.crm.entity.User;
+import com.crm.entity.ActivityType;
 import com.crm.exception.ResourceNotFoundException;
 import com.crm.repository.CustomerRepository;
 import com.crm.repository.TaskRepository;
@@ -22,8 +24,16 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
+    private final ActivityService activityService;
 
-    public TaskResponse createTask(TaskRequest request) {
+    private User getCurrentUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    public TaskResponse createTask(TaskRequest request, String currentUserEmail) {
+        User currentUser = getCurrentUser(currentUserEmail);
+
         Task task = Task.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -31,10 +41,12 @@ public class TaskService {
                 .status(request.getStatus() != null ? request.getStatus() : "PENDING")
                 .build();
 
-        if (request.getAssignedToId() != null) {
-            User user = userRepository.findById(request.getAssignedToId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-            task.setAssignedTo(user);
+        if (currentUser.getRole() == Role.ADMIN) {
+            User assignee = userRepository.findById(request.getAssignedToId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Assigned user not found"));
+            task.setAssignedTo(assignee);
+        } else {
+            task.setAssignedTo(currentUser);
         }
 
         if (request.getCustomerId() != null) {
@@ -43,13 +55,18 @@ public class TaskService {
             task.setCustomer(customer);
         }
 
-        return mapToResponse(taskRepository.save(task));
+        Task savedTask = taskRepository.save(task);
+        activityService.logSystemActivity(ActivityType.TASK_CREATED, "Created Task: " + savedTask.getTitle(), savedTask.getId(), "TASK", savedTask.getCustomer() != null ? savedTask.getCustomer().getId() : null, currentUserEmail);
+        return mapToResponse(savedTask);
     }
 
-    public TaskResponse updateTask(Long id, TaskRequest request) {
+    public TaskResponse updateTask(Long id, TaskRequest request, String currentUserEmail) {
+        User currentUser = getCurrentUser(currentUserEmail);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
+        String oldStatus = task.getStatus();
+        
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setDueDate(request.getDueDate());
@@ -57,10 +74,12 @@ public class TaskService {
             task.setStatus(request.getStatus());
         }
 
-        if (request.getAssignedToId() != null) {
-            User user = userRepository.findById(request.getAssignedToId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-            task.setAssignedTo(user);
+        if (currentUser.getRole() == Role.ADMIN) {
+            User assignee = userRepository.findById(request.getAssignedToId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Assigned user not found"));
+            task.setAssignedTo(assignee);
+        } else {
+            task.setAssignedTo(currentUser);
         }
 
         if (request.getCustomerId() != null) {
@@ -69,7 +88,11 @@ public class TaskService {
             task.setCustomer(customer);
         }
 
-        return mapToResponse(taskRepository.save(task));
+        Task savedTask = taskRepository.save(task);
+        if (!"COMPLETED".equals(oldStatus) && "COMPLETED".equals(savedTask.getStatus())) {
+            activityService.logSystemActivity(ActivityType.TASK_COMPLETED, "Completed Task: " + savedTask.getTitle(), savedTask.getId(), "TASK", savedTask.getCustomer() != null ? savedTask.getCustomer().getId() : null, currentUserEmail);
+        }
+        return mapToResponse(savedTask);
     }
 
     public void deleteTask(Long id) {
@@ -79,8 +102,16 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    public List<TaskResponse> getAllTasks() {
-        return taskRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<TaskResponse> getAllTasks(String currentUserEmail) {
+        User currentUser = getCurrentUser(currentUserEmail);
+
+        List<Task> tasks;
+        if (currentUser.getRole() == Role.ADMIN) {
+            tasks = taskRepository.findAll();
+        } else {
+            tasks = taskRepository.findByAssignedToId(currentUser.getId());
+        }
+        return tasks.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     public TaskResponse getTaskById(Long id) {

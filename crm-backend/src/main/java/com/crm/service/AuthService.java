@@ -28,9 +28,6 @@ public class AuthService {
         }
 
         Role role = Role.SALES;
-        if (request.getRole() != null && request.getRole().equalsIgnoreCase("ADMIN")) {
-            role = Role.ADMIN;
-        }
 
         User user = User.builder()
                 .name(request.getName())
@@ -44,6 +41,7 @@ public class AuthService {
         String token = tokenProvider.generateTokenFromUsername(user.getEmail());
 
         return AuthResponse.builder()
+                .id(user.getId())
                 .token(token)
                 .email(user.getEmail())
                 .name(user.getName())
@@ -62,6 +60,7 @@ public class AuthService {
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         return AuthResponse.builder()
+                .id(user.getId())
                 .token(token)
                 .email(user.getEmail())
                 .name(user.getName())

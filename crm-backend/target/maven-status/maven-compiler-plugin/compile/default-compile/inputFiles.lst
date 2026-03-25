@@ -40,6 +40,7 @@ C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src
 C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src\main\java\com\crm\security\JwtTokenProvider.java
 C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src\main\java\com\crm\security\JwtAuthenticationFilter.java
 C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src\main\java\com\crm\service\TaskService.java
+C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src\main\java\com\crm\dto\UserResponse.java
 C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src\main\java\com\crm\dto\LoginRequest.java
 C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src\main\java\com\crm\service\AuthService.java
 C:\Users\SARVESH VAIDHI\OneDrive\Desktop\Java - Copy\CRM-PROJECT\crm-backend\src\main\java\com\crm\service\LeadService.java

@@ -127,12 +127,12 @@ function AdminDashboardContent() {
                 className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-primary-500 text-primary-400'
-                    : 'border-transparent text-theme-text-muted hover:text-white hover:bg-white/5'
+                    : 'border-transparent text-theme-text-muted hover:text-theme-text-primary hover:bg-theme-bg-secondary'
                 }`}
               >
                 {tab.label}
                 <span className={`px-2 py-0.5 rounded-full text-xs ${
-                  activeTab === tab.id ? 'bg-primary-500/20' : 'bg-dark-800'
+                  activeTab === tab.id ? 'bg-primary-500/20 text-primary-400' : 'bg-theme-bg-secondary text-theme-text-muted'
                 }`}>
                   {tab.count}
                 </span>
@@ -144,7 +144,7 @@ function AdminDashboardContent() {
           <div className="p-0 overflow-x-auto">
             {activeTab === 'customers' && (
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-theme-text-muted uppercase bg-dark-900/50">
+                <thead className="text-xs text-theme-text-muted uppercase bg-theme-bg-secondary">
                   <tr>
                     <th className="px-6 py-4 font-medium">Name</th>
                     <th className="px-6 py-4 font-medium">Company</th>
@@ -156,7 +156,7 @@ function AdminDashboardContent() {
                 </thead>
                 <tbody className="divide-y divide-theme-table-divider">
                   {customers.map((c) => (
-                    <tr key={c.id} className="hover:bg-white/[0.02]">
+                    <tr key={c.id} className="hover:bg-theme-bg-secondary/50">
                       <td className="px-6 py-4 font-medium text-theme-text-primary">{c.name}</td>
                       <td className="px-6 py-4 text-theme-text-secondary">{c.company || '-'}</td>
                       <td className="px-6 py-4 text-theme-text-secondary">{c.email}</td>
@@ -178,7 +178,7 @@ function AdminDashboardContent() {
 
             {activeTab === 'leads' && (
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-theme-text-muted uppercase bg-dark-900/50">
+                <thead className="text-xs text-theme-text-muted uppercase bg-theme-bg-secondary">
                   <tr>
                     <th className="px-6 py-4 font-medium">Name</th>
                     <th className="px-6 py-4 font-medium">Email</th>
@@ -190,7 +190,7 @@ function AdminDashboardContent() {
                 </thead>
                 <tbody className="divide-y divide-theme-table-divider">
                   {leads.map((l) => (
-                    <tr key={l.id} className="hover:bg-white/[0.02]">
+                    <tr key={l.id} className="hover:bg-theme-bg-secondary/50">
                       <td className="px-6 py-4 font-medium text-theme-text-primary">{l.name}</td>
                       <td className="px-6 py-4 text-theme-text-secondary">{l.email}</td>
                       <td className="px-6 py-4 text-theme-text-secondary">{l.phone}</td>
@@ -208,7 +208,7 @@ function AdminDashboardContent() {
 
             {activeTab === 'tasks' && (
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-theme-text-muted uppercase bg-dark-900/50">
+                <thead className="text-xs text-theme-text-muted uppercase bg-theme-bg-secondary">
                   <tr>
                     <th className="px-6 py-4 font-medium">Title</th>
                     <th className="px-6 py-4 font-medium">Description</th>
@@ -219,7 +219,7 @@ function AdminDashboardContent() {
                 </thead>
                 <tbody className="divide-y divide-theme-table-divider">
                   {tasks.map((t) => (
-                    <tr key={t.id} className="hover:bg-white/[0.02]">
+                    <tr key={t.id} className="hover:bg-theme-bg-secondary/50">
                       <td className="px-6 py-4 font-medium text-theme-text-primary">{t.title}</td>
                       <td className="px-6 py-4 text-theme-text-secondary truncate max-w-xs">{t.description}</td>
                       <td className="px-6 py-4 text-theme-text-secondary">{t.dueDate ? new Date(t.dueDate).toLocaleDateString() : '-'}</td>
@@ -236,21 +236,21 @@ function AdminDashboardContent() {
 
             {activeTab === 'activities' && (
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-theme-text-muted uppercase bg-dark-900/50">
+                <thead className="text-xs text-theme-text-muted uppercase bg-theme-bg-secondary">
                   <tr>
-                    <th className="px-6 py-4 font-medium">Type</th>
-                    <th className="px-6 py-4 font-medium">Customer</th>
+                    <th className="px-6 py-4 font-medium">User</th>
+                    <th className="px-6 py-4 font-medium">Action</th>
+                    <th className="px-6 py-4 font-medium">Details</th>
                     <th className="px-6 py-4 font-medium">Date</th>
-                    <th className="px-6 py-4 font-medium">Notes</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-theme-table-divider">
                   {activities.map((a) => (
-                    <tr key={a.id} className="hover:bg-white/[0.02]">
-                      <td className="px-6 py-4 font-medium text-theme-text-primary">{a.type}</td>
-                      <td className="px-6 py-4 text-theme-text-secondary">{a.customerName}</td>
-                      <td className="px-6 py-4 text-theme-text-secondary">{a.date ? new Date(a.date).toLocaleDateString() : '-'}</td>
-                      <td className="px-6 py-4 text-theme-text-secondary">{a.notes}</td>
+                    <tr key={a.id} className="hover:bg-theme-bg-secondary/50">
+                      <td className="px-6 py-4 font-medium text-theme-text-primary">{a.performedByName || 'System'}</td>
+                      <td className="px-6 py-4 text-theme-text-secondary">{a.type.replace('_', ' ')}</td>
+                      <td className="px-6 py-4 text-theme-text-secondary">{a.notes || '-'}</td>
+                      <td className="px-6 py-4 text-theme-text-secondary">{a.date ? new Date(a.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : '-'}</td>
                     </tr>
                   ))}
                   {activities.length === 0 && (

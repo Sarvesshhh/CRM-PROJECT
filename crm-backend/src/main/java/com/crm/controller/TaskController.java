@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -24,14 +25,14 @@ public class TaskController {
 
     @PostMapping
     @Operation(summary = "Create a new task")
-    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest request) {
-        return ResponseEntity.ok(taskService.createTask(request));
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest request, Principal principal) {
+        return ResponseEntity.ok(taskService.createTask(request, principal.getName()));
     }
 
     @GetMapping
     @Operation(summary = "List all tasks")
-    public ResponseEntity<List<TaskResponse>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    public ResponseEntity<List<TaskResponse>> getAllTasks(Principal principal) {
+        return ResponseEntity.ok(taskService.getAllTasks(principal.getName()));
     }
 
     @GetMapping("/{id}")
@@ -43,8 +44,8 @@ public class TaskController {
     @PutMapping("/{id}")
     @Operation(summary = "Update a task")
     public ResponseEntity<TaskResponse> updateTask(@PathVariable(name = "id") Long id,
-                                                   @Valid @RequestBody TaskRequest request) {
-        return ResponseEntity.ok(taskService.updateTask(id, request));
+                                                   @Valid @RequestBody TaskRequest request, Principal principal) {
+        return ResponseEntity.ok(taskService.updateTask(id, request, principal.getName()));
     }
 
     @DeleteMapping("/{id}")

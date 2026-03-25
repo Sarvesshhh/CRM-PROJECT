@@ -52,7 +52,7 @@ function RegisterForm() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="John Doe"
                 required
-                className="w-full pl-11 pr-4 py-3 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary placeholder:text-theme-text-muted focus:border-theme-accent-primary transition-all"
+                className="w-full pl-11 pr-4 py-3 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary placeholder:text-theme-text-muted focus:border-theme-accent-primary transition-all"
               />
             </div>
           </div>
@@ -68,7 +68,7 @@ function RegisterForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 required
-                className="w-full pl-11 pr-4 py-3 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary placeholder:text-theme-text-muted focus:border-theme-accent-primary transition-all"
+                className="w-full pl-11 pr-4 py-3 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary placeholder:text-theme-text-muted focus:border-theme-accent-primary transition-all"
               />
             </div>
           </div>
@@ -84,23 +84,12 @@ function RegisterForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full pl-11 pr-4 py-3 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary placeholder:text-theme-text-muted focus:border-theme-accent-primary transition-all"
+                className="w-full pl-11 pr-4 py-3 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary placeholder:text-theme-text-muted focus:border-theme-accent-primary transition-all"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-theme-text-secondary mb-2">Role</label>
-            <select
-              id="register-role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-3 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary focus:border-theme-accent-primary transition-all"
-            >
-              <option value="SALES">Sales</option>
-              <option value="ADMIN">Admin</option>
-            </select>
-          </div>
+
 
           <button
             id="register-submit"

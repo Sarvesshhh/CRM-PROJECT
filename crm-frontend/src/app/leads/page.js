@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import Layout from '@/components/Layout';
 import Modal from '@/components/Modal';
-import { leadAPI } from '@/lib/api';
+import { leadAPI, userAPI } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
@@ -25,13 +25,17 @@ function LeadsContent() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLead, setEditingLead] = useState(null);
   const [filterStatus, setFilterStatus] = useState('');
+  const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
     name: '', email: '', phone: '', source: '', status: 'NEW', assignedToId: null,
   });
 
   useEffect(() => {
     if (!authLoading && !user) { router.push('/login'); return; }
-    if (user) fetchLeads();
+    if (user) {
+      fetchLeads();
+      fetchUsers();
+    }
   }, [user, authLoading, filterStatus]);
 
   const fetchLeads = async () => {
@@ -45,9 +49,21 @@ function LeadsContent() {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const res = await userAPI.getAll();
+      setUsers(res.data);
+    } catch (err) {
+      console.error('Failed to load users', err);
+    }
+  };
+
   const openCreate = () => {
     setEditingLead(null);
-    setForm({ name: '', email: '', phone: '', source: '', status: 'NEW', assignedToId: null });
+    setForm({
+      name: '', email: '', phone: '', source: '', status: 'NEW',
+      assignedToId: user?.role === 'ADMIN' ? '' : (user?.id || ''),
+    });
     setModalOpen(true);
   };
 
@@ -59,19 +75,20 @@ function LeadsContent() {
       phone: lead.phone || '',
       source: lead.source || '',
       status: lead.status || 'NEW',
-      assignedToId: lead.assignedToId || null,
+      assignedToId: lead.assignedToId || (user?.id || ''),
     });
     setModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = { ...form, assignedToId: Number(form.assignedToId) };
     try {
       if (editingLead) {
-        await leadAPI.update(editingLead.id, form);
+        await leadAPI.update(editingLead.id, payload);
         toast.success('Lead updated');
       } else {
-        await leadAPI.create(form);
+        await leadAPI.create(payload);
         toast.success('Lead created');
       }
       setModalOpen(false);
@@ -112,6 +129,8 @@ function LeadsContent() {
     };
     return map[status] || 'bg-dark-700 text-theme-text-secondary border-dark-600';
   };
+
+  const isAdmin = user?.role === 'ADMIN';
 
   if (authLoading || loading) {
     return <Layout><div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" /></div></Layout>;
@@ -160,6 +179,7 @@ function LeadsContent() {
                   <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider hidden md:table-cell">Phone</th>
                   <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider hidden lg:table-cell">Source</th>
                   <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider">Status</th>
+                  <th className="text-left px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider">Assigned To</th>
                   <th className="text-right px-6 py-4 text-xs font-medium text-theme-text-muted uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -175,6 +195,7 @@ function LeadsContent() {
                         {lead.status}
                       </span>
                     </td>
+                    <td className="px-6 py-4 text-sm text-theme-text-secondary">{lead.assignedToName || 'Unassigned'}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
                         <button onClick={() => openEdit(lead)} className="p-2 text-theme-text-muted hover:text-primary-400 hover:bg-primary-500/10 rounded-lg transition-all" title="Edit">
@@ -191,7 +212,7 @@ function LeadsContent() {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-theme-text-muted text-sm">No leads found</td>
+                    <td colSpan="7" className="px-6 py-12 text-center text-theme-text-muted text-sm">No leads found</td>
                   </tr>
                 )}
               </tbody>
@@ -205,25 +226,25 @@ function LeadsContent() {
             <div>
               <label className="block text-sm font-medium text-theme-text-secondary mb-1">Name *</label>
               <input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} required
-                className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
+                className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-theme-text-secondary mb-1">Email</label>
                 <input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-theme-text-secondary mb-1">Phone</label>
                 <input value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-theme-text-secondary mb-1">Source</label>
                 <select value={form.source} onChange={(e) => setForm({...form, source: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
                   <option value="">Select source</option>
                   {SOURCES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
                 </select>
@@ -231,10 +252,23 @@ function LeadsContent() {
               <div>
                 <label className="block text-sm font-medium text-theme-text-secondary mb-1">Status</label>
                 <select value={form.status} onChange={(e) => setForm({...form, status: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-theme-input-bg border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
                   {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-theme-text-secondary mb-1">Assign To *</label>
+              {isAdmin ? (
+                <select value={form.assignedToId} onChange={(e) => setForm({...form, assignedToId: e.target.value})} required
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-primary text-sm focus:border-theme-accent-primary transition-all">
+                  <option value="">Select user</option>
+                  {users.map(u => <option key={u.id} value={u.id}>{u.name} ({u.role})</option>)}
+                </select>
+              ) : (
+                <input value={user?.name || ''} disabled
+                  className="w-full px-4 py-2.5 bg-theme-bg-input border border-theme-card-border rounded-xl text-theme-text-muted text-sm cursor-not-allowed" />
+              )}
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={() => setModalOpen(false)}
